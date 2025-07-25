@@ -2,15 +2,20 @@ const taskInput = document.getElementById('taskInput');
 const addTaskBtn = document.getElementById('addTaskBtn');
 const taskList = document.getElementById('taskList');
 const clearCompletedBtn = document.getElementById('clearCompletedBtn');
+const clearAllTasksBtn = document.getElementById('clearAllTasksBtn');
 
 let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 displayTasks()
+
+function saveTasksToLocalStorage() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
 
 function addTask() {
     const taskText = taskInput.value.trim();
     if (taskText !== ''){
         tasks.push({text: taskText});
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+        saveTasksToLocalStorage();
         displayTasks();
         taskInput.value = '';
     }
@@ -25,12 +30,12 @@ function displayTasks() {
         li.querySelector("input").addEventListener("change", () => toggleTask(index));
         taskList.appendChild(li);
     });
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    saveTasksToLocalStorage();
 }
 
 function toggleTask(index) {
     tasks[index].completed = !tasks[index].completed;
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    saveTasksToLocalStorage();
     displayTasks();
 }
 
@@ -40,5 +45,12 @@ function clearCompletedTasks() {
         displayTasks();
 }
 
+function clearAllTasks() {
+    tasks = [];
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    displayTasks();
+}
+
 addTaskBtn.addEventListener("click", addTask);
 clearCompletedBtn.addEventListener("click", clearCompletedTasks);
+clearAllTasksBtn.addEventListener("click", clearAllTasks);
